@@ -11,6 +11,36 @@ public class Day8 {
 	      Arrays.sort(charArray);
 	      return new String(charArray);
 	}
+	private static String exclude(String a, String b) {
+		String diff="";
+		for (int i=0;i<b.length();++i) {
+			boolean add=true;
+			for (int j=0;j<a.length();++j) {
+				if (b.charAt(i)==a.charAt(j)) {
+					add=false;
+					break;
+				}
+			}
+			if (add)
+				diff+=b.charAt(i);
+		}
+		return diff;
+	}
+	private  static int intersect(String a, String b) {
+		int ans=0;
+		for (int i=0;i<b.length();++i) {
+			boolean add=false;
+			for (int j=0;j<a.length();++j) {
+				if (b.charAt(i)==a.charAt(j)) {
+					add=true;
+					break;
+				}
+			}
+			if (add)
+				ans++;
+		}
+		return ans;
+	}
 	public static HashMap<String,Integer> decode(String[] lines) {
 		
 		/*
@@ -36,72 +66,45 @@ public class Day8 {
 	9 has cf and bd
 		 */
 		Arrays.sort(lines,Comparator.comparingDouble(s-> s.length()));
-		HashMap<Integer,String> hmap=new HashMap<Integer,String>();
-		hmap.put(1,lines[0]);
-		hmap.put(7,lines[1]);
-		hmap.put(4, lines[2]);
-		hmap.put(8, lines[9]);
-		String a="";
-		String b="";
-		String c="";
-		String d="";
-		String e="";
-		String f="";
-		String g="";
-		c=lines[0];
-		f=lines[1];
-		for (int i=0;i<3;++i) {
-			if (lines[1].charAt(i)!= lines[0].charAt(0) && lines[1].charAt(i)!= lines[0].charAt(1))
-				a+=lines[1].charAt(i);
-		}
-		for (int i=0;i<4;++i) {
-			if (lines[2].charAt(i)!=c.charAt(0) && lines[2].charAt(i)!=c.charAt(1)) {
-				b+=lines[2].charAt(i);
-				d+=lines[2].charAt(i);
-			}
-			
-		}
+		String[] mymap=new String[10];
+		mymap[1]=lines[0];
+		mymap[7]=lines[1];
+		mymap[4]=lines[2];
+		mymap[8]=lines[9];	
+		String bd="";
+		String cf="";
+
+		cf=lines[0];
+		bd=exclude(cf,lines[2]);
+	
 		for (int i=3;i<=5;++i) {
-			int count_bc=0;
-			for (Character w : lines[i].toCharArray())
-				if (w==b.charAt(0) || w==b.charAt(1))
-					count_bc++;
-			if (count_bc==2) {
-				hmap.put(5, lines[i]);
+			int count_bd=intersect(bd,lines[i]);
+			if (count_bd==2) {
+				mymap[5]=lines[i];
 			}else {
-				int count_cf=0;
-				for (Character w : lines[i].toCharArray())
-					if (w==c.charAt(0) || w==c.charAt(1))
-					count_cf++;
+				int count_cf=intersect(cf,lines[i]);
 				if (count_cf==2) {
-					hmap.put(3,lines[i]);
+					mymap[3]=lines[i];
 				}else {
-					hmap.put(2, lines[i]);
+					mymap[2]=lines[i];
 				}
 			}
 		}
 		
 		for (int i=6;i<=8;++i) {
-			int common_cf=0;
-			int common_bd=0;
-			for (Character w : lines[i].toCharArray()) {
-				if (w ==c.charAt(0) || w==c.charAt(1))
-					common_cf++;
-				if (w ==b.charAt(0) || w==d.charAt(1))
-					common_bd++;
-			}
+			int common_cf=intersect(cf,lines[i]);
+			int common_bd=intersect(bd,lines[i]);
 			if (common_cf==2 && common_bd==2) {
-				hmap.put(9,lines[i]);
+				mymap[9]=lines[i];
 			}else if (common_cf==2) {
-				hmap.put(0, lines[i]);
+				mymap[0]=lines[i];
 			}else
-				hmap.put(6,lines[i]);
+				mymap[6]=lines[i];
 	
 		}		
 		 HashMap<String,Integer> hmap2=new HashMap<String,Integer>();
 		 for (int i=0;i<=9;++i) {
-			 hmap2.put(sort(hmap.get(i)), i);
-			// System.out.println(i+" "+hmap.get(i));
+			 hmap2.put(sort(mymap[i]), i);
 		 }
 		 return hmap2;
 		}
@@ -138,8 +141,8 @@ public class Day8 {
 		// TODO Auto-generated method stub
 		String SAMPLE="input/day8_sample.txt";
 		String REAL="input/day8.txt";
-		//System.out.println(function(SAMPLE));
-		//System.out.println(function(REAL));
+		System.out.println(function(SAMPLE));
+		System.out.println(function(REAL));
 		//
 		System.out.println(function2(SAMPLE));
 		System.out.println(function2(REAL));
