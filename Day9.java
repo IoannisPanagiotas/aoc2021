@@ -14,7 +14,7 @@ public class Day9 {
 
 	public static int[][] readBoard(String fname,int n2,int m2) throws IOException{
 		BufferedReader brdr=new BufferedReader(new FileReader(fname));
-		 board=new int[n2][m2];
+		board=new int[n2][m2];
 		n=n2;
 		m=m2;
 		for (int i=0;i<n;++i) {
@@ -37,27 +37,17 @@ public class Day9 {
 								add=false;
 						}
 					}
-					if (add) {
+					if (add)
 						low.add(i*m+j);
-					}
 				}
 			}
 			return low;
-	}
-	public static int sumOfLows(ArrayList<Integer> low) {
-		int ans=0;
-		for (Integer v : low) {
-			int j = v % m;
-			int i= v / m;
-			ans+=1+board[i][j];
-		}
-		return ans;
-	}
-	
+	}	
 	public static long getBasinOf(int i,int j) {
 		long size=0;;
 		int[] myQueue=new int[n*m];
 		myQueue[0]=i*m+j;
+		vis[i*m+j]=true;
 		int cpos=0;
 		int pos=1;
 		while (cpos<pos) {
@@ -65,7 +55,7 @@ public class Day9 {
 			int vj=myQueue[cpos++] % m;
 			size++;
 			for (int z=0;z<4;++z) {
-				int dj=X[z] + vj;
+				int dj= X[z] + vj;
 				int di= Y[z] + vi;
 				if (di>=0 && dj>=0 && di<n && dj<m && !vis[di*m+dj]) {
 					if (board[di][dj] > board[vi][vj] && board[di][dj]!=9) {
@@ -83,7 +73,6 @@ public class Day9 {
 	public static long part2(ArrayList<Integer> lowPoints) {
 		long[] top3=new long[3];
 		int ADDED=0;
-		int q=0;
 		for (Integer v : lowPoints) {
 			int vi=v / m;
 			int vj=v % m;
