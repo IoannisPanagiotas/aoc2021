@@ -9,6 +9,10 @@ class CountObject{
 	public CountObject() {
 		freq=new long[26];
 	}
+	public void reset() {
+		for (int i=0;i<26;++i)
+			freq[i]=0;
+	}
 	public void add(CountObject co2) {
 		for (int i=0;i<26;++i)
 			freq[i]+=co2.freq[i];
@@ -30,10 +34,15 @@ public class Day14 {
 			rules.put(lns[0], lns[1].charAt(0));
 			rulesID.put(lns[0],nruleid++);
 		}
-		CountObject[][] dp=new CountObject[rules.size()][iters+1];
-		for (String rule : rules.keySet())
+		CountObject[][] dp=new CountObject[rules.size()][2];
+		int dpin=0,dpout=1;
+		for (String rule : rules.keySet()) {
 			dp[rulesID.get(rule)][0]=new CountObject();
+			dp[rulesID.get(rule)][1]=new CountObject();
+		}
 		for (int iter=1;iter<=iters;++iter) {
+				 dpout = (iter % 2);
+				 dpin  = ((iter+1)) % 2;
 				for (String rule: rules.keySet()) {
 					String  part1="";
 					part1+=rule.charAt(0);
@@ -41,12 +50,12 @@ public class Day14 {
 					String part2="";
 					part2+=rules.get(rule);
 					part2+=rule.charAt(1);
-					dp[rulesID.get(rule)][iter]=new CountObject();
+					dp[rulesID.get(rule)][dpout].reset();
 					if (rules.containsKey(part1)) 
-						dp[rulesID.get(rule)][iter].add(dp[rulesID.get(part1)][iter-1]);
+						dp[rulesID.get(rule)][dpout].add(dp[rulesID.get(part1)][dpin]);
 					if (rules.containsKey(part2))
-						dp[rulesID.get(rule)][iter].add(dp[rulesID.get(part2)][iter-1]);
-					dp[rulesID.get(rule)][iter].freq[rules.get(rule)-'A']++;
+						dp[rulesID.get(rule)][dpout].add(dp[rulesID.get(part2)][dpin]);
+					dp[rulesID.get(rule)][dpout].freq[rules.get(rule)-'A']++;
 				}
 		}
 		CountObject ans=new CountObject();
@@ -57,7 +66,7 @@ public class Day14 {
 				temp+=expression.charAt(i);
 				temp+=expression.charAt(i+1);
 				if (rules.containsKey(temp)) 
-					ans.add(dp[rulesID.get(temp)][iters]);
+					ans.add(dp[rulesID.get(temp)][dpout]);
 			}
 		}
 		long[] freq=ans.freq;
