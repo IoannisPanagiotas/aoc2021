@@ -19,7 +19,9 @@ class CountObject{
 	}
 }
 public class Day14 {
-	
+	public static String concatChars(char a,char b) {
+		return a+""+b;
+	}
 	public static long function(String fname,int iters) throws IOException{
 		BufferedReader brdr=new BufferedReader(new FileReader(fname));
 		String expression=brdr.readLine();
@@ -44,12 +46,8 @@ public class Day14 {
 				 dpout = (iter % 2);
 				 dpin  = ((iter+1)) % 2;
 				for (String rule: rules.keySet()) {
-					String  part1="";
-					part1+=rule.charAt(0);
-					part1+=rules.get(rule);
-					String part2="";
-					part2+=rules.get(rule);
-					part2+=rule.charAt(1);
+					String  part1=concatChars(rule.charAt(0),rules.get(rule));
+					String part2 =concatChars(rules.get(rule),rule.charAt(1));
 					dp[rulesID.get(rule)][dpout].reset();
 					if (rules.containsKey(part1)) 
 						dp[rulesID.get(rule)][dpout].add(dp[rulesID.get(part1)][dpin]);
@@ -62,9 +60,7 @@ public class Day14 {
 		for (int i=0;i<expression.length();++i) {
 			ans.freq[expression.charAt(i)-'A']++;
 			if (i!=expression.length()-1) {
-				String temp="";
-				temp+=expression.charAt(i);
-				temp+=expression.charAt(i+1);
+				String temp=concatChars(expression.charAt(i),expression.charAt(i+1));
 				if (rules.containsKey(temp)) 
 					ans.add(dp[rulesID.get(temp)][dpout]);
 			}
