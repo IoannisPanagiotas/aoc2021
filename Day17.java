@@ -32,12 +32,7 @@ public class Day17 {
 		int ans=0;
 		for (int i=-400;i<400;++i) { //expl: cant be that far from target (around sqrt is likely better estimation but anyway)
 			for (int j=-400;j<400;++j) {
-				/*if (-1!=trajectoryConverges(i,j,lowX,uppX,lowY,uppY)) {
-					if (count)
-						ans++;
-					else
-						ans=Math.max(ans, j);
-				}*/
+		
 				if (count)
 					ans=ans+bruteforce_followTrajectory(i,j,lowX,uppX,lowY,uppY,count);
 				else
