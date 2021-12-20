@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -38,7 +39,6 @@ public class Day20 {
 					binaryRepr+=grid[ni][nj];
 			}
 		}
-			//System.out.print("("+grid[i][j]+")"+binaryRepr+" ");
 		return Integer.parseInt(binaryRepr,2);
 		
 	}
@@ -59,6 +59,8 @@ public class Day20 {
 	public static int function(String fname,int iterations,int n,int m) throws IOException{
 		BufferedReader brdr=new BufferedReader(new FileReader(fname));	
 		String filter=brdr.readLine();
+		//at each new iteration four extra lines can start having non-default values 
+		//default is the value of a vertex in [-inf,-inf] i.e., that's surrounded by 9 default values
 		int[][] grid=new int[n+2*iterations][m+2*iterations];
 		brdr.readLine();
 		String ln="";
@@ -75,10 +77,9 @@ public class Day20 {
 			}
 			y++;
 		}
-		//print(grid);
 		int defaultValue=0;
 		for (int iter=0;iter<iterations;++iter) {
-			HashSet<GridPoint> gridChanges=new HashSet<GridPoint>();
+			ArrayList<GridPoint> gridChanges=new ArrayList<GridPoint>();
 			//
 			for (int i=0;i<grid.length;++i) {
 				for (int j=0;j<grid[i].length;++j) {
@@ -86,13 +87,11 @@ public class Day20 {
 					if  ( (filter.charAt(position)=='#' && grid[i][j]==0) ||  (filter.charAt(position)=='.' && grid[i][j]==1) )
 						gridChanges.add(new GridPoint(i,j));
 				}
-				//System.out.println();
 			}
 			for (GridPoint gp : gridChanges) {
 				grid[gp.y][gp.x] = (grid[gp.y][gp.x] +1) %2;
 				lit+=  (grid[gp.y][gp.x]==1) ? 1 : -1;
 			}
-			//print(grid);
 			if (defaultValue==0) 
 				defaultValue= ( filter.charAt(0)=='#') ? 1 : 0;
 			else
@@ -107,6 +106,7 @@ public class Day20 {
 	
 		System.out.println(function(SAMPLE,2,5,5));
 		System.out.println(function(REAL,2,100,100));
+		
 		System.out.println(function(SAMPLE,50,5,5));
 		System.out.println(function(REAL,50,100,100));
 		
