@@ -26,7 +26,6 @@ public class Day21 {
 				score2+=player2;
 			}
 			b=(b+1)%2;
-			//System.out.println(diceSumForRound+": "+player1+" "+score1+" |"+player2+" "+score2+" "+diceThrows);
 
 		}
 		return Math.min(score1,score2)*diceThrows;
@@ -40,7 +39,7 @@ public class Day21 {
 	}
 	
 	public static long function2(int playerPos1,int playerPos2,int WINNUM) {
-		int NTHROWS=126; //super-upper bound
+		int NTHROWS=3*2*WINNUM; //super-upper bound
 		long[][][][][][] dp=new long[NTHROWS][11][11][WINNUM+1][WINNUM+1][7];
 		
 		dp[0][playerPos1][playerPos2][0][0][0]=1;
