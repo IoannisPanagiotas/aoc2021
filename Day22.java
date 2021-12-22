@@ -12,6 +12,11 @@ class  OnSegment{
 		long lz=z[1]-z[0]+1;
 		return lx*ly*lz;
 	}
+	public OnSegment(int[] x,int[] y,int[] z) {
+		this.x=x;
+		this.y=y;
+		this.z=z;
+	}
 }
 public class Day22 {
 	public static int[] getCoords(String s) {
@@ -78,7 +83,35 @@ public class Day22 {
 		}
 		return lit;
 	}
+	public static ArrayList<OnSegment> turnOffIntersection(OnSegment existing,int[] x,int[] y,int[] z){
+		
+		ArrayList<OnSegment> replacements=new ArrayList<OnSegment>();
+		int[] interx=intersectionWith(existing.x,x);
+		int[] intery=intersectionWith(existing.y,y);
+		int[] interz=intersectionWith(existing.z,z);
+		//[1,1] ,[1..2], [1...5]  and [0..1] [2..2] [2..4]
+		// intersect to  [1..1] [2..2] [2..4]
+		if (interx[0]==Integer.MAX_VALUE || intery[0]==Integer.MAX_VALUE || interz[0]==Integer.MAX_VALUE) { //no inetersection at all
+			replacements.add(existing);
+		}else {
+			if (existing.x[0] < interx[0]) 
+				replacements.add(new OnSegment(new int[]{existing.x[0],interx[0]-1},existing.y,existing.z));
+			if (existing.x[1] > interx[1])
+				replacements.add(new OnSegment(new int[]{interx[1]+1,existing.x[1]},existing.y,existing.z));
+			if (existing.y[0] < intery[0])
+				replacements.add(new OnSegment(interx,new int[]{existing.y[0],intery[0]-1},existing.z));
+			if (existing.y[1] > intery[1])
+				replacements.add(new OnSegment(interx,new int[]{intery[1]+1,existing.y[1]},existing.z));
+			if (existing.z[0] < interz[0])
+				replacements.add(new OnSegment(interx,intery,new int[]{existing.z[0],interz[0]-1}));
+			if (existing.z[1] > interz[1])
+				replacements.add(new OnSegment(interx,intery,new int[]{interz[1]+1,existing.z[1]}));
+			
+		}
+		return replacements;
+	}
 	public static long function2(String fname)  throws IOException{
+		//maybe Kd-trees or R-trees or other comp. geometry classes would make things faster but i dont remember them :P
 		BufferedReader brdr=new BufferedReader(new FileReader(fname));
 
 		ArrayList<OnSegment> segments=new ArrayList<OnSegment>();
@@ -89,26 +122,54 @@ public class Day22 {
 			int[] x=getCoords(lncomma[0]);
 			int[] y=getCoords(lncomma[1]);
 			int[] z=getCoords(lncomma[2]);
-			if (lns[0].equals("on"))){ // reduce this segment into a series of disjoint segments
-										//such that each disjoint segment is not intersecting with any of the segments in
-										//the arraylist
-			}else { 				    // for each segment in the arraylist
-										//find its intersection  and create new segments to insert in the arraylist
-				
+			if (lns[0].equals("on")){ 
+				ArrayList<OnSegment> disjointSegmentsOfNew=new ArrayList<OnSegment>();
+				disjointSegmentsOfNew.add(new OnSegment(x,y,z));
+				for (OnSegment seg : segments) {
+					ArrayList<OnSegment> replaceDisjointSegmentsWith=new ArrayList<OnSegment>();
+					for (OnSegment disjointSeg : disjointSegmentsOfNew) {
+						ArrayList<OnSegment> tempDisjointList=turnOffIntersection(disjointSeg,seg.x,seg.y,seg.z);
+						for (OnSegment tempDisjointSegment: tempDisjointList)
+							replaceDisjointSegmentsWith.add(tempDisjointSegment);
+					}
+					disjointSegmentsOfNew.clear();
+					for (OnSegment repDisjointSegment: replaceDisjointSegmentsWith)
+						disjointSegmentsOfNew.add(repDisjointSegment);
+				}
+				for (OnSegment disjointSegment : disjointSegmentsOfNew)
+					segments.add(disjointSegment);
+			}else { 				    
+				ArrayList<OnSegment> replaceSegmentsWith=new ArrayList<OnSegment>();
+				for (OnSegment seg : segments) {
+					ArrayList<OnSegment> tempList=turnOffIntersection(seg,x,y,z);
+					for (OnSegment tempSegment: tempList)
+						replaceSegmentsWith.add(tempSegment);
+				}
+				segments.clear();
+				for (OnSegment seg: replaceSegmentsWith)
+					segments.add(seg);
 			}
 		}
 		long ans=0;
-		for (OnSegment segment: segments)
+		for (OnSegment segment: segments) {
 			ans+=segment.getOnes();
+		}
 		return ans;
 	}
 	public static void main(String[] args) throws IOException{
 		// TODO Auto-generated method stub
 		String SAMPLE="input/day22_sample.txt";
+		String SAMPLE2="input/day22_sample2.txt";
+
 		String REAL="input/day22.txt";
 
 		System.out.println(function(SAMPLE,-50,50));
 		System.out.println(function(REAL,-50,50));
+		
+		System.out.println(function2(SAMPLE2));
+		System.out.println(function2(REAL));
+
+
 	}
 
 }
