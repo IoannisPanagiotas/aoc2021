@@ -62,8 +62,8 @@ class Visitor{
 		for (int i=0;i<4;++i) ROOM[ROOMS[i]]=true;
 	
 		for (int direction=0;direction<2;++direction) {
-			if (doneLeft && direction==0) continue;
-			if (doneRight && direction==1) continue;
+			if (doneLeft || doneRight) 
+				continue;
 			int i = (direction==0) ? x-1 : x+1;
 			int target=(direction==0) ? -1 : 11;
 			while (i!=target) {
@@ -326,13 +326,11 @@ public class Day23 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
 		System.out.println(function("BACDBCDA"));
 		System.out.println(function("BDCDCABA"));
 
 		System.out.println(function("BDDACCBDBBACDACA"));
 		System.out.println(function("BDDDCCBDCBAABACA"));
-
 
 	}
 
