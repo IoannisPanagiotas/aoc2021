@@ -5,40 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Day24 {
-	public static long function(String fname,long[] w) throws IOException {
-		BufferedReader brdr=new BufferedReader(new FileReader(fname));
-		
-		int wmet=0;
-		long[] wxyz=new long[4];
-		String ln="";
-		int inpsread=0;
-		while ((ln=brdr.readLine())!=null) {
-			String[] lsn=ln.split(" ");
-			char lsn2_0='a';
-			if (lsn.length==3)
-				lsn2_0=lsn[2].charAt(0);
-			int lsn1=lsn[1].charAt(0)-'w';
-			if (lsn[0].equals("inp")) 
-				wxyz[lsn1]=w[wmet++];
-			else if (lsn[0].equals("add")) 
-				wxyz[lsn1] += (lsn2_0>='w' && lsn2_0<='z' ) ? wxyz[lsn2_0-'w'] : Integer.parseInt(lsn[2]);
-			else if (lsn[0].equals("mul")) 
-					wxyz[lsn1] *= (lsn2_0>='w' && lsn2_0<='z' ) ? wxyz[lsn2_0-'w'] : Integer.parseInt(lsn[2]);
-			else if (lsn[0].equals("div")) 
-					wxyz[lsn1] /= (lsn2_0>='w' && lsn2_0<='z' ) ? wxyz[lsn2_0-'w'] : Integer.parseInt(lsn[2]);
-			else if (lsn[0].equals("mod")) 
-					wxyz[lsn1] %= (lsn2_0>='w' && lsn2_0<='z' ) ? wxyz[lsn2_0-'w'] : Integer.parseInt(lsn[2]);
-			else {
-				long value=(lsn2_0>='w' && lsn2_0<='z' ) ? wxyz[lsn2_0-'w'] : Integer.parseInt(lsn[2]);
-				wxyz[lsn1] = (wxyz[lsn1]==value) ? 1 : 0;
-			}
-		/*	System.out.print(ln+": ");
-			for (int i=0;i<4;++i)
-				System.out.print(wxyz[i]+" ");
-			System.out.println(); */
-		}
-		return wxyz[3];
-	}
 	public static void readInput(String fname,long[] A,long[] B,long[] C) throws IOException {
 		BufferedReader brdr=new BufferedReader(new FileReader(fname));
 		for (int w=0;w<14;++w) {
